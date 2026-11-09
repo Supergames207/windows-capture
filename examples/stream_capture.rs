@@ -107,5 +107,5 @@ fn main() {
         size,
     );
 
-    StreamCapture::start(settings).expect("Stream capture failed");
+    StreamCapture::start(settings, None).expect("Stream capture failed");
 }

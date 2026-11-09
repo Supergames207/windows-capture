@@ -14,6 +14,8 @@ use windows::Win32::System::WinRT::{
 use windows::Win32::UI::WindowsAndMessaging::{
     DispatchMessageW, GetMessageW, MSG, PostQuitMessage, PostThreadMessageW, TranslateMessage, WM_QUIT,
 };
+use windows::Win32::Graphics::Dxgi::{DXGI_SHARED_RESOURCE, DXGI_SHARED_RESOURCE_READ, DXGI_SHARED_RESOURCE_WRITE, IDXGIAdapter, IDXGIAdapter4, IDXGIDevice, IDXGIFactory4, IDXGIResource1};
+
 use windows::core::Result as WindowsResult;
 use windows_future::AsyncActionCompletedHandler;
 
@@ -287,7 +289,7 @@ pub trait GraphicsCaptureApiHandler: Sized {
     /// Starts the capture and takes control of the current thread.
     #[inline]
     fn start<T: TryInto<GraphicsCaptureItemType>>(
-        settings: Settings<Self::Flags, T>,
+        settings: Settings<Self::Flags, T>, adapter : Option<IDXGIAdapter4>
     ) -> Result<(), GraphicsCaptureApiError<Self::Error>>
     where
         Self: Send + 'static,
@@ -306,7 +308,7 @@ pub trait GraphicsCaptureApiHandler: Sized {
         let thread_id = unsafe { GetCurrentThreadId() };
 
         // Create Direct3D device and context
-        let (d3d_device, d3d_device_context) = create_d3d_device()?;
+        let (d3d_device, d3d_device_context) = create_d3d_device(adapter)?;
 
         // Start capture
         let result = Arc::new(Mutex::new(None));
@@ -365,7 +367,7 @@ pub trait GraphicsCaptureApiHandler: Sized {
     /// Starts the capture without taking control of the current thread.
     #[inline]
     fn start_free_threaded<T: TryInto<GraphicsCaptureItemType> + Send + 'static>(
-        settings: Settings<Self::Flags, T>,
+        settings: Settings<Self::Flags, T>
     ) -> Result<CaptureControl<Self, Self::Error>, GraphicsCaptureApiError<Self::Error>>
     where
         Self: Send + 'static,
@@ -388,7 +390,7 @@ pub trait GraphicsCaptureApiHandler: Sized {
             let thread_id = unsafe { GetCurrentThreadId() };
 
             // Create direct3d device and context
-            let (d3d_device, d3d_device_context) = create_d3d_device()?;
+            let (d3d_device, d3d_device_context) = create_d3d_device(None)?;
 
             // Start capture
             let result = Arc::new(Mutex::new(None));

@@ -257,7 +257,7 @@ impl NativeWindowsCapture {
 
             let settings = self.capture_settings(window);
 
-            match py.detach(move || InnerNativeWindowsCapture::start(settings)) {
+            match py.detach(move || InnerNativeWindowsCapture::start(settings, None)) {
                 Ok(()) => (),
                 Err(e) => {
                     return Err(PyException::new_err(format!(
@@ -276,7 +276,7 @@ impl NativeWindowsCapture {
 
             let settings = self.capture_settings(window);
 
-            match py.detach(move || InnerNativeWindowsCapture::start(settings)) {
+            match py.detach(move || InnerNativeWindowsCapture::start(settings, None)) {
                 Ok(()) => (),
                 Err(e) => {
                     return Err(PyException::new_err(format!(
@@ -295,7 +295,7 @@ impl NativeWindowsCapture {
 
             let settings = self.capture_settings(monitor);
 
-            match py.detach(move || InnerNativeWindowsCapture::start(settings)) {
+            match py.detach(move || InnerNativeWindowsCapture::start(settings, None)) {
                 Ok(()) => (),
                 Err(e) => {
                     return Err(PyException::new_err(format!(

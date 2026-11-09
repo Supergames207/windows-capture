@@ -274,7 +274,7 @@ fn start_capture<T: TryInto<GraphicsCaptureItemType>>(
 
     // Start the capture and take control of the current thread.
     // Any errors from the capture handler will be propagated here.
-    Capture::start(capture_settings).expect("Screen capture failed");
+    Capture::start(capture_settings, None).expect("Screen capture failed");
 }
 
 fn main() {

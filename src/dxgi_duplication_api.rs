@@ -214,7 +214,7 @@ impl DxgiDuplicationApi {
     /// module.
     pub fn new(monitor: Monitor) -> Result<Self, Error> {
         // Create D3D11 device and context.
-        let (d3d_device, d3d_device_context) = create_d3d_device()?;
+        let (d3d_device, d3d_device_context) = create_d3d_device(None)?;
 
         let dxgi_device = d3d_device.cast::<IDXGIDevice4>()?;
         let output = find_output_for_monitor(&dxgi_device, monitor)?;
@@ -244,7 +244,7 @@ impl DxgiDuplicationApi {
     /// `Bgra8` is inserted because it is widely supported and serves as a reliable fallback.
     pub fn new_options(monitor: Monitor, supported_formats: &[DxgiDuplicationFormat]) -> Result<Self, Error> {
         // Create D3D11 device and context.
-        let (d3d_device, d3d_device_context) = create_d3d_device()?;
+        let (d3d_device, d3d_device_context) = create_d3d_device(None)?;
 
         let dxgi_device = d3d_device.cast::<IDXGIDevice4>()?;
         let output = find_output_for_monitor(&dxgi_device, monitor)?;

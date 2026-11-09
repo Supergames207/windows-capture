@@ -119,5 +119,5 @@ fn main() {
 
     // Starts the capture and takes control of the current thread.
     // The errors from the handler trait will end up here.
-    Capture::start(settings).expect("Screen capture failed");
+    Capture::start(settings, None).expect("Screen capture failed");
 }

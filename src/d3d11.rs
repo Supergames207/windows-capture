@@ -11,6 +11,8 @@ use windows::Win32::Graphics::Direct3D11::{
     D3D11_MAPPED_SUBRESOURCE, D3D11_SDK_VERSION, D3D11_TEXTURE2D_DESC, D3D11_USAGE_STAGING, D3D11CreateDevice,
     ID3D11Device, ID3D11DeviceContext, ID3D11Texture2D,
 };
+use windows::Win32::Graphics::Dxgi::{IDXGIAdapter, IDXGIAdapter4};
+
 use windows::Win32::Graphics::Dxgi::Common::{DXGI_FORMAT, DXGI_SAMPLE_DESC};
 use windows::Win32::Graphics::Dxgi::IDXGIDevice;
 use windows::Win32::System::WinRT::Direct3D11::CreateDirect3D11DeviceFromDXGIDevice;
@@ -158,7 +160,7 @@ pub(crate) fn unmap_staging_texture(context: &ID3D11DeviceContext, texture: &mut
 /// - [`Error::FeatureLevelNotSatisfied`] when the created device does not support at least feature
 ///   level 11.0
 #[inline]
-pub fn create_d3d_device() -> Result<(ID3D11Device, ID3D11DeviceContext), Error> {
+pub fn create_d3d_device(adapter : Option<IDXGIAdapter4>) -> Result<(ID3D11Device, ID3D11DeviceContext), Error> {
     // Array of Direct3D feature levels.
     // The feature levels are listed in descending order of capability.
     // The highest feature level supported by the system is at index 0.
@@ -176,19 +178,37 @@ pub fn create_d3d_device() -> Result<(ID3D11Device, ID3D11DeviceContext), Error>
     let mut d3d_device = None;
     let mut feature_level = D3D_FEATURE_LEVEL::default();
     let mut d3d_device_context = None;
-    unsafe {
-        D3D11CreateDevice(
-            None,
-            D3D_DRIVER_TYPE_HARDWARE,
-            HMODULE::default(),
-            D3D11_CREATE_DEVICE_BGRA_SUPPORT,
-            Some(&feature_flags),
-            D3D11_SDK_VERSION,
-            Some(&mut d3d_device),
-            Some(&mut feature_level),
-            Some(&mut d3d_device_context),
-        )?;
-    };
+
+    if let Some(adapter) = adapter{
+        unsafe {
+            D3D11CreateDevice(
+                &adapter,
+                D3D_DRIVER_TYPE_HARDWARE,
+                HMODULE::default(),
+                D3D11_CREATE_DEVICE_BGRA_SUPPORT,
+                Some(&feature_flags),
+                D3D11_SDK_VERSION,
+                Some(&mut d3d_device),
+                Some(&mut feature_level),
+                Some(&mut d3d_device_context),
+            )?;
+        };
+    }
+    else{
+        unsafe {
+            D3D11CreateDevice(
+                None,
+                D3D_DRIVER_TYPE_HARDWARE,
+                HMODULE::default(),
+                D3D11_CREATE_DEVICE_BGRA_SUPPORT,
+                Some(&feature_flags),
+                D3D11_SDK_VERSION,
+                Some(&mut d3d_device),
+                Some(&mut feature_level),
+                Some(&mut d3d_device_context),
+            )?;
+        };
+    }
 
     if feature_level.0 < D3D_FEATURE_LEVEL_11_0.0 {
         return Err(Error::FeatureLevelNotSatisfied);
