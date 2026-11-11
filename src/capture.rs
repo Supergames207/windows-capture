@@ -14,7 +14,7 @@ use windows::Win32::System::WinRT::{
 use windows::Win32::UI::WindowsAndMessaging::{
     DispatchMessageW, GetMessageW, MSG, PostQuitMessage, PostThreadMessageW, TranslateMessage, WM_QUIT,
 };
-use windows::Win32::Graphics::Dxgi::{DXGI_SHARED_RESOURCE, DXGI_SHARED_RESOURCE_READ, DXGI_SHARED_RESOURCE_WRITE, IDXGIAdapter, IDXGIAdapter4, IDXGIDevice, IDXGIFactory4, IDXGIResource1};
+use windows::Win32::Graphics::Dxgi::{IDXGIAdapter4};
 
 use windows::core::Result as WindowsResult;
 use windows_future::AsyncActionCompletedHandler;

@@ -58,7 +58,7 @@ pub struct PickedGraphicsCaptureItem {
     /// The selected `GraphicsCaptureItem` (window or monitor).
     pub item: GraphicsCaptureItem,
     /// Keeps the hidden owner `HWND` alive until the picked item is consumed.
-    _guard: HwndGuard,
+    pub _guard: HwndGuard,
 }
 
 impl PickedGraphicsCaptureItem {
