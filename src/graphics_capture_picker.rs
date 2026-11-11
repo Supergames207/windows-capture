@@ -37,7 +37,7 @@ unsafe extern "system" fn wnd_proc(hwnd: HWND, msg: u32, wparam: WPARAM, lparam:
 /// RAII guard that keeps the picker resources alive until the selected item is
 /// consumed.
 pub struct HwndGuard {
-    hwnd: HWND,
+    pub hwnd: HWND,
     _winrt: WinRT,
 }
 
